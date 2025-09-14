@@ -1,36 +1,55 @@
 // src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useContext } from "react";
+import "./styles/App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
 
-// Importar los componentes de las opciones del administrador
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
-import ReservaList from './components/ReservaList';
-import EspacioList from './components/EspacioList';
-import PagoList from './components/PagoList';
-import Notificacion from './components/Notificacion';
+// Layout
+import Header from "./components/layout/Header";
+import Sidebar from "./components/layout/Sidebar";
 
-const App = () => {
+// Auth
+import Login from "./components/auth/Login";
+
+// Dashboard
+import Dashboard from "./components/dashboard/Dashboard";
+import ReservaList from "./components/dashboard/ReservaList";
+import EspaciosList from "./components/dashboard/EspaciosList";
+import PagoList from "./components/dashboard/PagoList";
+import NotificacionList from "./components/dashboard/NotificacionList";
+
+const ProtectedLayout = () => {
+  const { usuario } = useContext(AuthContext);
+
+  if (!usuario) return <Login />;
+
   return (
-    <Router>
-      <div className="App">
-        <Header /> {/* Cabecera fija */}
-        <div className="main-container">
-          <Sidebar /> {/* Sidebar fijo */}
-          <div className="content">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/reservas" element={<ReservaList />} />
-              <Route path="/espacios" element={<EspacioList />} />
-              <Route path="/pagos" element={<PagoList />} />
-              <Route path="/notificaciones" element={<Notificacion />} />
-            </Routes>
-          </div>
+    <div className="App">
+      <Header />
+      <div className="main-container">
+        <Sidebar />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/reservas" element={<ReservaList />} />
+            <Route path="/espacios" element={<EspaciosList />} />
+            <Route path="/pagos" element={<PagoList />} />
+            <Route path="/notificaciones" element={<NotificacionList />} />
+          </Routes>
         </div>
       </div>
-    </Router>
+    </div>
   );
 };
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <ProtectedLayout />
+      </Router>
+    </AuthProvider>
+  );
+}
 
 export default App;
