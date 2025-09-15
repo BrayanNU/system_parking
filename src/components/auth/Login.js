@@ -1,7 +1,7 @@
 // src/components/auth/Login.js
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { login as loginService } from "../../services/usuariosService";
+import usuariosService from "../../services/usuariosService";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -12,7 +12,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await loginService(correo, contrasena);
+      const data = await usuariosService.login(correo, contrasena);
       login(data); // Guardamos en AuthContext
     } catch (err) {
       setError("Credenciales incorrectas");

@@ -1,12 +1,19 @@
 // src/services/usuariosService.js
 import api from "./api";
 
-export const login = async (correo, contrasena) => {
-  const res = await api.post("/usuarios/login", { correo, contrasena });
-  return res.data;
+const getAll = () => api.get("/usuarios");
+const create = (data) => api.post("/usuarios", data);
+const update = (id, data) => api.put(`/usuarios/${id}`, data);
+const remove = (id) => api.delete(`/usuarios/${id}`);
+const login = async (correo, contrasena) => {
+  const response = await api.post("/usuarios/login", { correo, contrasena });
+  return response.data; // 👈 aquí devolvemos solo los datos (token, user)
 };
 
-export const register = async (usuario) => {
-  const res = await api.post("/usuarios/register", usuario);
-  return res.data;
+export default {
+  getAll,
+  create,
+  update,
+  remove,
+  login,
 };

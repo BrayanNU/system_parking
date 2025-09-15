@@ -17,6 +17,7 @@ import ReservaList from "./components/dashboard/ReservaList";
 import EspaciosList from "./components/dashboard/EspaciosList";
 import PagoList from "./components/dashboard/PagoList";
 import NotificacionList from "./components/dashboard/NotificacionList";
+import UsuariosList from "./components/dashboard/UsuariosList";
 
 const ProtectedLayout = () => {
   const { usuario } = useContext(AuthContext);
@@ -35,6 +36,7 @@ const ProtectedLayout = () => {
             <Route path="/espacios" element={<EspaciosList />} />
             <Route path="/pagos" element={<PagoList />} />
             <Route path="/notificaciones" element={<NotificacionList />} />
+            <Route path="/usuarios" element={<UsuariosList />} />
           </Routes>
         </div>
       </div>

@@ -1,4 +1,6 @@
 // server/server.js
+require("dotenv").config();
+
 require('dotenv').config();
 require("./jobs/reservasJob");
 const express = require('express');

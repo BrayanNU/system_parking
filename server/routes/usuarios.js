@@ -1,16 +1,16 @@
 // server/routes/usuarios.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const ctrl = require('../controllers/usuariosController');
-const { auth, requireAdmin } = require('../middleware/auth');
+const usuariosController = require("../controllers/usuariosController");
+const { auth, requireAdmin } = require("../middleware/auth");
 
-// Para crear el primer admin (puedes deshabilitarlo luego)
-router.post('/register', ctrl.register);
+// CRUD Usuarios (solo admin)
+router.get("/", auth, requireAdmin, usuariosController.getAll);
+router.post("/", auth, requireAdmin, usuariosController.create);
+router.put("/:id", auth, requireAdmin, usuariosController.update);
+router.delete("/:id", auth, requireAdmin, usuariosController.remove);
 
-// Login admin
-router.post('/login', ctrl.login);
-
-// Ver perfil del admin logueado
-router.get('/me', auth, requireAdmin, ctrl.me);
+// Login (público)
+router.post("/login", usuariosController.login);
 
 module.exports = router;

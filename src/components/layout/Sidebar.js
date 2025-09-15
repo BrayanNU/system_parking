@@ -24,6 +24,9 @@ const Sidebar = () => {
         <li>
           <Link to="/notificaciones">Notificaciones</Link>
         </li>
+        <li>
+          <Link to="/usuarios">Usuarios</Link>
+        </li>
       </ul>
 
       {/* Botón de cerrar sesión */}
