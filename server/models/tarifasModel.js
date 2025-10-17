@@ -1,17 +1,45 @@
 // server/models/tarifasModel.js
-const pool = require('../config/db');
+const db = require("../config/db");
 
-async function list() {
-  const [rows] = await pool.query('SELECT * FROM tarifas WHERE activa = 1');
+// Listar todas las tarifas
+exports.getAll = async () => {
+  const [rows] = await db.query("SELECT * FROM tarifas ORDER BY idTarifa DESC");
   return rows;
-}
+};
 
-async function create({ descripcion, precio, unidad }) {
-  const [r] = await pool.query(
-    'INSERT INTO tarifas (descripcion, precio, unidad, activa) VALUES (?, ?, ?, 1)',
-    [descripcion, precio, unidad]
+// Obtener tarifa activa
+exports.getActiva = async () => {
+  const [rows] = await db.query("SELECT * FROM tarifas WHERE activa = 1 LIMIT 1");
+  return rows[0];
+};
+
+// Crear nueva tarifa
+exports.create = async (data) => {
+  const [result] = await db.query(
+    `INSERT INTO tarifas (dTarifa, descripcion, precio, unidad, activa) 
+     VALUES (?, ?, ?, ?, ?)`,
+    [data.dTarifa, data.descripcion, data.precio, data.unidad, data.activa || 0]
   );
-  return r.insertId;
-}
+  const [rows] = await db.query("SELECT * FROM tarifas WHERE idTarifa = ?", [result.insertId]);
+  return rows[0];
+};
 
-module.exports = { list, create };
+// Actualizar tarifa
+exports.update = async (id, data) => {
+  await db.query(
+    `UPDATE tarifas SET dTarifa=?, descripcion=?, precio=?, unidad=?, activa=? WHERE idTarifa=?`,
+    [data.dTarifa, data.descripcion, data.precio, data.unidad, data.activa || 0, id]
+  );
+  const [rows] = await db.query("SELECT * FROM tarifas WHERE idTarifa = ?", [id]);
+  return rows[0];
+};
+
+// Eliminar tarifa
+exports.remove = async (id) => {
+  await db.query("DELETE FROM tarifas WHERE idTarifa = ?", [id]);
+};
+
+// Desactivar todas las tarifas
+exports.desactivarTodas = async () => {
+  await db.query("UPDATE tarifas SET activa = 0");
+};

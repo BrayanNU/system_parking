@@ -1,0 +1,133 @@
+/* espacios.css renombrado con prefijo esp- */
+.esp-container-espacios {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+}
+.textoEspa{
+ 
+}
+
+.esp-h2 {
+  margin-bottom: 5px;
+}
+
+.esp-encabezado {
+ display: flex;
+}
+
+.esp-circ-1{
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background-color: rgb(183, 255, 183);
+  margin-right: 8px;
+  border: 1px solid #858585
+}
+.esp-circ-2{
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background-color: rgb(252, 187, 187);
+  margin-right: 8px;
+  border: 1px solid #858585
+}
+.esp-circ-3{
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background-color: rgb(255, 255, 186);
+  margin-right: 8px;
+  border: 1px solid #858585
+}
+.esp-icon{
+  display: flex;
+  align-items: self-start;
+  margin-right: 12px;
+}
+
+.esp-plano {
+  position: relative; 
+  width: 100%;
+  height: 725px; 
+  background-color: #ffffff;
+  border: solid rgb(212, 212, 212);
+  padding: 10px;
+  overflow: visible;
+  border-radius: 28px;
+}
+
+.esp-box {
+  position: absolute !important;
+  width: 80px;
+  height: 100px;
+  border: 1px solid #858585;
+  border-radius: 3px;
+  background-color: white;
+  transition: background 0.3s, transform 0.3s, top 0.3s, left 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: #333;
+}
+
+.esp-ocupado {
+  background-color: rgb(252, 187, 187);
+}
+
+.esp-disponible {
+  background-color: rgb(183, 255, 183);
+}
+
+.esp-reservado {
+  background-color: rgb(255, 255, 186);
+}
+
+.esp-inactivo {
+  background-color: gray;
+}
+
+/* IDs de los espacios */
+#esp-1  { top: 10px;  left: 140px;  transform: rotate(deg); }
+#esp-2  { top: 10px;  left: 258px;  transform: rotate(deg); }
+#esp-3  { top: 10px;  left: 376px; transform: rotate(deg); }
+#esp-4  { top: 10px;  left: 494px; transform: rotate(deg); }
+#esp-5  { top: 10px;  left: 612px; transform: rotate(deg); }
+#esp-6  { top: 10px;  left: 730px;  transform: rotate(deg); }
+#esp-7  { top: 10px;  left: 848px; transform: rotate(deg); }
+#esp-8  { top: 10px;  left: 966px; transform: rotate(deg); }
+#esp-9  { top: 10px;  left: 1084px; transform: rotate(deg); }
+#esp-10  { top: 10px;  left: 1202px; transform: rotate(deg); }
+#esp-11  { top: 10px;  left: 1320px; transform: rotate(deg); }
+#esp-12  { top: 10px;  left: 1438px; transform: rotate(deg); }
+
+#esp-13 { top: 140px; left: 25px; transform: rotate(90deg); }
+#esp-14 { top: 250px; left: 25px; transform: rotate(90deg); }
+#esp-15 { top: 360px; left: 25px; transform: rotate(90deg); }
+#esp-16 { top: 470px; left: 25px; transform: rotate(90deg); }
+
+#esp-17 { top: 300px; left: 376px; transform: rotate(deg); }
+#esp-18 { top: 300px; left: 494px; transform: rotate(deg); }
+#esp-19 { top: 300px; left: 612px; transform: rotate(deg); }
+#esp-20 { top: 300px; left: 730px; transform: rotate(deg); }
+#esp-21 { top: 300px; left: 848px;  transform: rotate(deg); }
+#esp-22 { top: 300px; left: 966px;  transform: rotate(deg); }
+#esp-23 { top: 300px; left: 1084px; transform: rotate(deg); }
+#esp-24 { top: 300px; left: 1202px; transform: rotate(deg); }
+
+#esp-25  { top: 600px;  left: 140px;  transform: rotate(deg); }
+#esp-26  { top: 600px;  left: 258px;  transform: rotate(deg); }
+#esp-27  { top: 600px;  left: 376px; transform: rotate(deg); }
+#esp-28  { top: 600px;  left: 494px; transform: rotate(deg); }
+#esp-29  { top: 600px;  left: 612px; transform: rotate(deg); }
+#esp-30  { top: 600px;  left: 730px;  transform: rotate(deg); }
+#esp-31  { top: 600px;  left: 848px;  transform: rotate(deg); }
+#esp-32  { top: 600px;  left: 966px; transform: rotate(deg); }
+#esp-33  { top: 600px;  left: 1084px; transform: rotate(deg); }
+#esp-34  { top: 600px;  left: 1202px;  transform: rotate(deg); }
+#esp-35  { top: 600px;  left: 1320px; transform: rotate(deg); }
+#esp-36  { top: 600px;  left: 1438px; transform: rotate(deg); }

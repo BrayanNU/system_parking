@@ -1,0 +1,65 @@
+/* Barra superior */
+.cliente-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ff5a00;
+  color: white;
+  padding: 12px 16px;
+}
+
+.cliente-navbar .logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Sidebar oculto por defecto */
+.cliente-sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 220px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  padding-top: 60px;
+}
+
+/* Cuando está abierto */
+.cliente-sidebar.open {
+  left: 0;
+}
+
+/* Links */
+.cliente-sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cliente-sidebar nav ul li {
+  border-bottom: 1px solid #eee;
+}
+
+.cliente-sidebar nav ul li a {
+  display: block;
+  padding: 14px;
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+}
+
+.cliente-sidebar nav ul li.active a {
+  background: #ff5a00;
+  color: white;
+}

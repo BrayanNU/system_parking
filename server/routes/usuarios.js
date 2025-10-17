@@ -13,4 +13,13 @@ router.delete("/:id", auth, requireAdmin, usuariosController.remove);
 // Login (público)
 router.post("/login", usuariosController.login);
 
+router.post("/register", usuariosController.create_cli);
+
+// Verificación por correo
+router.post("/enviar-codigo", usuariosController.enviarCodigo);
+router.post("/verificar-codigo", usuariosController.verificarCodigo);
+
+router.post("/solicitar-restablecimiento", usuariosController.solicitarRestablecimiento);
+router.post("/restablecer-contrasena", usuariosController.restablecerContrasena);
+
 module.exports = router;

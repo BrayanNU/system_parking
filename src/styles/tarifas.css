@@ -1,0 +1,116 @@
+/* ---------- Contenedor principal ---------- */
+.tarifas-container {
+  margin: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ---------- Título ---------- */
+.tarifas-container h2 {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* ---------- Formulario ---------- */
+.form-tarifa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  height: auto;
+}
+
+.form-tarifa input,
+.form-tarifa select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.form-tarifa input::placeholder {
+  color: #868686;
+}
+
+
+.form-tarifa button {
+  background-color: #0150f4;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.form-tarifa button:hover {
+  background-color: #0056b3;
+}
+
+/* ---------- Tabla ---------- */
+.tabla-tarifas {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-tarifas th,
+.tabla-tarifas td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.tabla-tarifas th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.tabla-tarifas tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* ---------- Botones en tabla ---------- */
+.tabla-tarifas button {
+  margin-right: 6px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-editar {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.btn-editar:hover {
+  background-color: #e0a800;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-eliminar:hover {
+  background-color: #c82333;
+}
+
+.btn-activar {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-activar:hover {
+  background-color: #218838;
+}
+
+button[type="submit"]{
+  background-color: #0150F4 !important;
+}

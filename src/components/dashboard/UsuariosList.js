@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import usuariosService from "../../services/usuariosService";
+import Swal from "sweetalert2";
+import DataTable from "react-data-table-component";
+import "../../styles/usuarios.css";
 
 const UsuarioList = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -7,11 +10,11 @@ const UsuarioList = () => {
     nombre: "",
     apellido: "",
     correo: "",
-    contrasena: "",
     rol: "cliente",
     estado: "activo",
   });
   const [editId, setEditId] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     fetchUsuarios();
@@ -37,14 +40,27 @@ const UsuarioList = () => {
         await usuariosService.update(editId, formData);
         setEditId(null);
       } else {
-        await usuariosService.create(formData);
+        const res = await usuariosService.create(formData);
+        if (res.data?.correo && res.data?.contrasenaTemporal) {
+          setFormData((prev) => ({ ...prev, correo: res.data.correo }));
+
+          Swal.fire({
+            title: "Usuario creado",
+            html: `
+              <p><strong>Correo:</strong> ${res.data.correo}</p>
+              <p><strong>Contraseña temporal:</strong> <span style="color:red;">${res.data.contrasenaTemporal}</span></p>
+            `,
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+        }
       }
+
       fetchUsuarios();
       setFormData({
         nombre: "",
         apellido: "",
         correo: "",
-        contrasena: "",
         rol: "cliente",
         estado: "activo",
       });
@@ -58,7 +74,6 @@ const UsuarioList = () => {
       nombre: usuario.nombre,
       apellido: usuario.apellido,
       correo: usuario.correo,
-      contrasena: "", // no se carga para no mostrar hash
       rol: usuario.rol,
       estado: usuario.estado,
     });
@@ -66,101 +81,157 @@ const UsuarioList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("¿Seguro que quieres eliminar este usuario?")) {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Este usuario será eliminado permanentemente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
       try {
         await usuariosService.remove(id);
         fetchUsuarios();
+        Swal.fire({
+          title: "Eliminado",
+          text: "El usuario ha sido eliminado con éxito.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
       } catch (error) {
-        console.error("Error eliminando usuario:", error);
+        Swal.fire({
+          title: "Error eliminando usuario",
+          html: `<p><strong>Error:</strong> ${error.message || error}</p>`,
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
       }
     }
   };
 
+  const filteredUsuarios = usuarios.filter(
+    (u) =>
+      `${u.nombre} ${u.apellido}`.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const columns = [
+    { name: "ID", selector: (row) => row.id_usuario, sortable: true },
+    { name: "Nombre", selector: (row) => `${row.nombre} ${row.apellido}`, sortable: true },
+    { name: "Correo", selector: (row) => row.correo },
+    { name: "Rol", selector: (row) => row.rol },
+    { name: "Estado", selector: (row) => row.estado },
+    {
+      name: "Acciones",
+      cell: (row) => (
+        <>
+          <button
+            className="boton_edit"
+            onClick={() => handleEdit(row)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+          </button>
+          <button
+            className="boton_delete"
+            onClick={() => handleDelete(row.id_usuario)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </>
+      ),
+    },
+  ];
+
   return (
-    <div style={{ display: "flex", gap: "20px" }}>
+    <div className="container_usuarios">
       {/* Formulario */}
-      <div style={{ flex: "1" }}>
+      <div className="mb-4">
         <h2>{editId ? "Editar Usuario" : "Registrar Usuario"}</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="apellido"
-            placeholder="Apellido"
-            value={formData.apellido}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="email"
-            name="correo"
-            placeholder="Correo"
-            value={formData.correo}
-            onChange={handleChange}
-            required
-          />
-          {!editId && (
+        <form onSubmit={handleSubmit} className="form_user">
+          <div className="bloq_form">
             <input
-              type="password"
-              name="contrasena"
-              placeholder="Contraseña"
-              value={formData.contrasena}
+              type="text"
+              name="nombre"
+              placeholder="Nombre"
+              value={formData.nombre}
               onChange={handleChange}
               required
+              className="form-control"
             />
-          )}
-          <select name="rol" value={formData.rol} onChange={handleChange} required>
-            <option value="admin">Administrador</option>
-            <option value="trabajador">Trabajador</option>
-            <option value="cliente">Cliente</option>
-          </select>
-          <select name="estado" value={formData.estado} onChange={handleChange} required>
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
-          </select>
-          <button type="submit">
-            {editId ? "Guardar Cambios" : "Agregar Usuario"}
+          </div>
+          <div className="bloq_form">
+            <input
+              type="text"
+              name="apellido"
+              placeholder="Apellido"
+              value={formData.apellido}
+              onChange={handleChange}
+              required
+              className="form-control"
+            />
+          </div>
+          <div className="bloq_form">
+            <input
+              type="email"
+              name="correo"
+              placeholder="Correo generado"
+              value={formData.correo}
+              readOnly
+              className="form-control"
+            />
+          </div>
+          <div className="bloq_form">
+            <select
+              name="rol"
+              value={formData.rol}
+              onChange={handleChange}
+              required
+              className="form-select"
+            >
+              <option value="admin">Administrador</option>
+              <option value="trabajador">Trabajador</option>
+              <option value="cliente">Cliente</option>
+            </select>
+          </div>
+          <div className="bloq_form">
+            <select
+              name="estado"
+              value={formData.estado}
+              onChange={handleChange}
+              required
+              className="form-select"
+            >
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+          <button type="submit" className="boton_usuario">
+            {editId ? "Guardar Cambios" : "Agregar"}
           </button>
         </form>
       </div>
 
       {/* Tabla */}
-      <div style={{ flex: "2" }}>
-        <h2>Lista de Usuarios</h2>
-        <table border="1" width="100%">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Rol</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((u) => (
-              <tr key={u.id_usuario}>
-                <td>{u.id_usuario}</td>
-                <td>{u.nombre} {u.apellido}</td>
-                <td>{u.correo}</td>
-                <td>{u.rol}</td>
-                <td>{u.estado}</td>
-                <td>
-                  <button onClick={() => handleEdit(u)}>Editar</button>
-                  <button onClick={() => handleDelete(u.id_usuario)}>Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="tabla-container">
+       
+        <div className="pest-tabla">
+          <input
+            type="text"
+            placeholder="Buscar por cliente..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            className="buscador"
+          />
+        </div>
+        <DataTable
+          columns={columns}
+          data={filteredUsuarios}
+          pagination
+          highlightOnHover
+          responsive
+          striped
+        />
       </div>
     </div>
   );

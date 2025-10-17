@@ -1,48 +1,58 @@
-// server/jobs/reservasJob.js
+// server/jobs/reservasJobs.js
 const cron = require("node-cron");
-const db = require("../config/db");
 const moment = require("moment");
+const Reserva = require("../models/reservasModel");
+const Espacios = require("../models/espaciosModel");
 
-// Tarea: revisar reservas cada minuto
+console.log("🚀 Servicio de control automático de reservas iniciado...");
+
+// 🕒 Ejecuta cada minuto
 cron.schedule("* * * * *", async () => {
   try {
-    console.log("⏰ Ejecutando job de reservas...");
+    console.log("⏰ Ejecutando revisión automática de reservas...");
 
-    const [reservas] = await db.query("SELECT * FROM reserva WHERE estado = 'activa'");
+    // 1️⃣ Obtener todas las reservas activas o próximas
+    const reservas = await Reserva.getAllActivas();
+    if (!reservas.length) {
+      console.log("📭 No hay reservas activas o próximas en este momento.");
+      return;
+    }
+
     const ahora = moment();
 
-    for (const reserva of reservas) {
-      const horaSalida = moment(`${reserva.fecha} ${reserva.horaSalida}`, "YYYY-MM-DD HH:mm:ss");
+    for (const r of reservas) {
+      // Convertir fecha (dd/mm/yyyy → yyyy-mm-dd)
+      const fechaISO = r.fecha.split("/").reverse().join("-");
+      const horaEntrada = moment(`${fechaISO} ${r.horaEntrada}`, "YYYY-MM-DD HH:mm:ss");
+      const horaSalida = moment(`${fechaISO} ${r.horaSalida}`, "YYYY-MM-DD HH:mm:ss");
 
-      // 1️⃣ Faltan <= 10 minutos y aún no tiene notificación de alerta
-      const diffMin = horaSalida.diff(ahora, "minutes");
-      if (diffMin <= 10 && diffMin > 0) {
-        await db.query(
-          "INSERT INTO notificaciones (idReserva, mensaje, tipo) VALUES (?, ?, 'alerta')",
-          [reserva.idReserva, `⚠️ La reserva ${reserva.codigoReserva} vence en ${diffMin} minutos`]
-        );
-        console.log(`📢 Notificación de alerta creada para reserva ${reserva.codigoReserva}`);
+      // Calcular diferencia en minutos con la hora actual
+      const diffEntrada = horaEntrada.diff(ahora, "minutes");
+      const diffSalida = horaSalida.diff(ahora, "minutes");
+
+      // 2️⃣ Si falta menos de 10 min para la hora de entrada → marcar como “próximo”
+      if (diffEntrada <= 10 && diffEntrada > 0 && r.estadoEspacio !== "proximo") {
+        await Espacios.updateEstado(r.idEspacio, "proximo");
+        console.log(`🟡 Espacio ${r.numeroEspacio} marcado como PRÓXIMO (${r.codigoReserva})`);
       }
 
-      // 2️⃣ Si ya venció → actualizar estado y registrar notificación + pago pendiente
-      if (ahora.isAfter(horaSalida)) {
-        await db.query("UPDATE reserva SET estado='finalizada' WHERE idReserva=?", [reserva.idReserva]);
+      // 3️⃣ Si ya estamos dentro del rango de tiempo de la reserva → “ocupado”
+      if (ahora.isBetween(horaEntrada, horaSalida) && r.estadoEspacio !== "ocupado") {
+        await Espacios.updateEstado(r.idEspacio, "ocupado");
+        await Reserva.updateEstado(r.idReserva, "activo");
+        console.log(`🟢 Espacio ${r.numeroEspacio} marcado como OCUPADO (${r.codigoReserva})`);
+      }
 
-        await db.query(
-          "INSERT INTO notificaciones (idReserva, mensaje, tipo) VALUES (?, ?, 'reserva')",
-          [reserva.idReserva, `✅ La reserva ${reserva.codigoReserva} ha finalizado`]
-        );
-
-        // 3️⃣ Registrar en pagos con estado pendiente
-        await db.query(
-          "INSERT INTO pagos (idReserva, monto, metodo, estado) VALUES (?, ?, ?, ?)",
-          [reserva.idReserva, reserva.precioTotal, "efectivo", "pendiente"] // 👈 por defecto efectivo, admin/cliente puede cambiar después
-        );
-
-        console.log(`💰 Pago pendiente creado para reserva ${reserva.codigoReserva}`);
+      // 4️⃣ Si ya pasó la hora de salida → liberar espacio y finalizar reserva
+      if (ahora.isAfter(horaSalida) && r.estadoEspacio !== "disponible") {
+        await Espacios.updateEstado(r.idEspacio, "disponible");
+        await Reserva.updateEstado(r.idReserva, "finalizada");
+        console.log(`🔵 Espacio ${r.numeroEspacio} liberado (${r.codigoReserva})`);
       }
     }
+
+    console.log("✅ Revisión de reservas completada.\n");
   } catch (error) {
-    console.error("🔥 Error en job de reservas:", error);
+    console.error("🔥 Error en job de reservas:", error.message);
   }
 });

@@ -10,6 +10,10 @@ const usuariosRoutes = require('./routes/usuarios');
 const reservasRoutes = require('./routes/reservas');
 const espaciosRoutes = require('./routes/espacios');
 const tarifasRoutes = require('./routes/tarifas');
+const pagosRoutes = require("./routes/pagos");
+const ticketsRoutes = require("./routes/tickets");
+const dashboardRoutes = require("./routes/dashboard");
+
 
 const app = express();
 app.use(cors());
@@ -21,6 +25,11 @@ app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/espacios', espaciosRoutes);
 app.use('/api/tarifas', tarifasRoutes);
+app.use("/api/pagos", pagosRoutes);
+app.use("/api/tickets", ticketsRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
+
 
 // 404
 app.use((req, res) => res.status(404).json({ error: 'No encontrado' }));
