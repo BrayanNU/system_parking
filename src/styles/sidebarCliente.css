@@ -3,9 +3,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ff5a00;
-  color: white;
+  background: #0841c5;
+  color: rgb(255, 255, 255);
   padding: 12px 16px;
+    z-index: 1100;  
+    height: 45px;
 }
 
 .cliente-navbar .logo {
@@ -19,6 +21,7 @@
   font-size: 22px;
   color: white;
   cursor: pointer;
+    z-index: 1200;   
 }
 
 /* Sidebar oculto por defecto */
@@ -28,7 +31,7 @@
   left: -250px;
   width: 220px;
   height: 100%;
-  background: #fff;
+  background: #0841c5;
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
   transition: left 0.3s ease;
   z-index: 1000;
@@ -55,11 +58,18 @@
   display: block;
   padding: 14px;
   text-decoration: none;
-  color: #333;
+  color: #ffffff;
   font-size: 16px;
 }
 
 .cliente-sidebar nav ul li.active a {
-  background: #ff5a00;
+  background: #0055ff;
   color: white;
+}
+
+.logout-button-cl{
+  background-color: rgb(255, 255, 255);
+  border-radius: 18px;
+  margin-left: 20%;
+  margin-top: 210%;
 }

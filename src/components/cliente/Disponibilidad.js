@@ -73,10 +73,6 @@ const Disponibilidad = () => {
           <div className="esp-circ-3"></div>
           <p className="textoEspa">Próximo</p>
         </div>
-        <div className="esp-icon">
-          <div className="esp-circ-4"></div>
-          <p className="textoEspa">Inactivo</p>
-        </div>
       </div>
 
       {/* Plano de espacios */}
@@ -93,6 +89,40 @@ const Disponibilidad = () => {
           </div>
         ))}
       </div>
+      <div className="info_res">
+  <h2 className="info-title">Instrucciones para seleccionar un espacio de estacionamiento</h2>
+  <ul className="info-bullets">
+    <li>
+      <strong>Visualiza el mapa de espacios disponibles.</strong><br />
+      Cada espacio se muestra con un color que indica su estado actual.
+    </li>
+    <li>
+      <strong>Significado de los colores:</strong>
+      <ul className="color-legend">
+  <li><div className="esp-circ-a"></div>Espacio disponible. Puedes seleccionarlo para realizar una reserva.</li>
+  <li><div className="esp-circ-b"></div>Espacio ocupado o no disponible. No se puede seleccionar.</li>
+  <li><div className="esp-circ-c"></div>Espacio reservado próximamente (se ocupará en menos de 10 minutos).</li>
+</ul>
+    </li>
+    <li>
+      <strong>Selecciona un espacio verde.</strong><br />
+      Haz clic sobre el espacio que desees reservar.
+    </li>
+    <li>
+      <strong>Registra la hora de tu reserva.</strong><br />
+      Indica la hora de inicio y fin para confirmar tu reserva.
+    </li>
+    <li>
+      <strong>Verificación de disponibilidad por horario.</strong><br />
+      Si el sistema detecta que tu horario se cruza con otra reserva, se mostrará un aviso indicando que no es posible registrar la reserva en ese horario.
+    </li>
+    <li>
+      <strong>Confirmación de reserva.</strong><br />
+      Una vez validada la disponibilidad, podrás completar el registro exitosamente.
+    </li>
+  </ul>
+</div>
+
     </div>
   );
 };

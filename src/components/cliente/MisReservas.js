@@ -7,14 +7,14 @@ import tarifasService from "../../services/tarifasService";
 import { QRCodeCanvas } from "qrcode.react";
 import Swal from "sweetalert2";
 import "../../styles/misReservas.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 
 const MisReservas = () => {
   
   const location = useLocation();
   const { idEspacio } = location.state || {}; 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const [reservas, setReservas] = useState([]);
   const [espacios, setEspacios] = useState([]);
@@ -213,61 +213,44 @@ const fetchTarifas = async () => {
 
       {/* Tabla de reservas */}
       <div className="tabla-reservas">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Espacio</th>
-              <th>Placa</th>
-              <th>Fecha</th>
-              <th>Entrada</th>
-              <th>Salida</th>
-              <th>Precio</th>
-              <th>Estado</th>
-              <th>QR</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reservas.length > 0 ? (
-              reservas.map((r) => (
-                <tr key={r.idReserva}>
-                  <td>{r.codigoReserva}</td>
-                  <td>{r.numeroEspacio || r.idEspacio}</td>
-                  <td>{r.placa}</td>
-                  <td>{r.fecha}</td>
-                  <td>{r.horaEntrada}</td>
-                  <td>{r.horaSalida}</td>
-                  <td>S/ {r.precioTotal}</td>
-                  <td>{r.estado}</td>
-                  <td>
-                    <QRCodeCanvas value={r.codigoReserva} size={64} />
-                  </td>
-                  <td>
+        {/* Listado de reservas como tarjetas */}
+        <div className="reservas-list">
+          {reservas.length > 0 ? (
+            reservas.map((r) => (
+              <div key={r.idReserva} className="reserva-card">
+                <div className="reserva-info">
+                  <div className="reserva-header">
+                    <h3>Reserva #{r.codigoReserva}</h3>
+                    <span className={`estado ${r.estado.toLowerCase()}`}>
+                      {r.estado}
+                    </span>
+                  </div>
+
+                  <p><strong>Espacio:</strong> {r.numeroEspacio || r.idEspacio}</p>
+                  <p><strong>Placa:</strong> {r.placa}</p>
+                  <p><strong>Fecha:</strong> {r.fecha}</p>
+                  <p><strong>Entrada:</strong> {r.horaEntrada}</p>
+                  <p><strong>Salida:</strong> {r.horaSalida}</p>
+                  <p><strong>Precio:</strong> S/ {r.precioTotal}</p>
+                </div>
+
+                <div className="reserva-actions">
+                  <QRCodeCanvas value={r.codigoReserva} size={168} />
+                  <div className="btn-group">
                     <button
-                      className="btn btn-danger btn-sm"
+                      className="btn_res_a"
                       onClick={() => handleDelete(r.idReserva)}
                     >
                       Eliminar
                     </button>
-                      <button
-                      className="btn btn-primary btn-sm"
-                      onClick={() => navigate(`/cliente/pagos/${r.idReserva}`)} // <-- Navigate to the payment page
-                    >
-                      Pagar
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="10" className="text-center">
-                  No tienes reservas aún
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="no-reservas">No tienes reservas aún</p>
+          )}
+        </div>
       </div>
     </div>
   );

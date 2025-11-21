@@ -49,10 +49,17 @@ exports.updateByReserva = async (idReserva, data) => {
   const fields = [];
   const values = [];
 
+  // ✅ Ahora también permite actualizar el monto
+  if (data.monto !== undefined) {
+    fields.push("monto = ?");
+    values.push(parseFloat(data.monto).toFixed(2));
+  }
+
   if (data.metodo !== undefined) {
     fields.push("metodo = ?");
     values.push(data.metodo);
   }
+
   if (data.estado !== undefined) {
     fields.push("estado = ?");
     values.push(data.estado);
@@ -67,11 +74,13 @@ exports.updateByReserva = async (idReserva, data) => {
     values.push(fechaPago);
   }
 
+  // Si no hay nada que actualizar, salimos
   if (fields.length === 0) {
-    return null; // nada que actualizar
+    return null;
   }
 
-  const sql = `UPDATE pagos SET ${fields.join(", ")} WHERE idReserva = ? AND estado = 'pendiente'`;
+  // ✅ Quitamos la restricción del estado si quieres permitir actualizar montos de pagos activos o pendientes
+  const sql = `UPDATE pagos SET ${fields.join(", ")} WHERE idReserva = ?`;
 
   const [result] = await db.query(sql, [...values, idReserva]);
 
@@ -80,13 +89,10 @@ exports.updateByReserva = async (idReserva, data) => {
   }
 
   // Devolvemos el pago actualizado
-  const [rows] = await db.query(
-    `SELECT * FROM pagos WHERE idReserva = ?`,
-    [idReserva]
-  );
-
+  const [rows] = await db.query(`SELECT * FROM pagos WHERE idReserva = ?`, [idReserva]);
   return rows[0];
 };
+
 
 
 

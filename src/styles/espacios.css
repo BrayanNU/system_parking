@@ -131,3 +131,167 @@
 #esp-34  { top: 600px;  left: 1202px;  transform: rotate(deg); }
 #esp-35  { top: 600px;  left: 1320px; transform: rotate(deg); }
 #esp-36  { top: 600px;  left: 1438px; transform: rotate(deg); }
+
+.info_res{
+  background-color: #ffffff;
+  height: 280px;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 10px;
+}
+.info_res h2{
+  font-size: 12px;
+}
+.color-legend {
+  list-style: none;
+  padding-left: 0;
+  margin: 8px 0;
+}
+
+.color-legend li {
+  display: flex;
+  align-items: center; /* centra verticalmente el círculo y el texto */
+  gap: 8px; /* espacio entre círculo y texto */
+  margin-bottom: 6px;
+}
+@media screen and (max-width: 428px) {
+  /* espacios.css renombrado con prefijo esp- */
+.esp-container-espacios {
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  width: 100%;
+  height: 670px;
+  border-radius: 28px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.textoEspa{
+ 
+}
+
+.esp-h2 {
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+
+.esp-encabezado {
+ display: flex;
+ height: 25px;
+}
+.info-title{
+  font-weight: bold;
+}
+.esp-circ-a{
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: rgb(183, 255, 183);
+  border: 1px solid #858585
+}
+.esp-circ-b{
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: rgb(252, 187, 187);
+  border: 1px solid #858585
+}
+.esp-circ-c{
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: rgb(255, 255, 186);
+  border: 1px solid #858585
+}
+.esp-icon{
+  display: flex;
+  align-items: self-start;
+  margin-right: 12px;
+  font-size: 12px;
+}
+
+.esp-plano {
+  position: relative; 
+  width: 100%;
+  height: 270px; 
+  background-color: #ffffff;
+  border: solid rgb(212, 212, 212);
+  padding: 10px;
+  overflow: visible;
+  border-radius: 28px;
+}
+
+.esp-box {
+  position: absolute !important;
+  width: 25px;
+  height: 35px;
+  border: 1px solid #858585;
+  border-radius: 3px;
+  background-color: white;
+  transition: background 0.3s, transform 0.3s, top 0.3s, left 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: #333;
+  font-size: 6px;
+}
+
+.esp-ocupado {
+  background-color: rgb(252, 187, 187);
+}
+
+.esp-disponible {
+  background-color: rgb(183, 255, 183);
+}
+
+.esp-reservado {
+  background-color: rgb(255, 255, 186);
+}
+
+.esp-inactivo {
+  background-color: gray;
+}
+
+/* IDs de los espacios */
+#esp-1  { top: 9px;  left: 18px;  transform: rotate(deg); }
+#esp-2  { top: 9px;  left: 46px;  transform: rotate(deg); }
+#esp-3  { top: 9px;  left: 74px;  transform: rotate(deg); }
+#esp-4  { top: 9px;  left: 102px;  transform: rotate(deg); }
+#esp-5  { top: 9px;  left: 130px; transform: rotate(deg); }
+#esp-6  { top: 9px;  left: 158px; transform: rotate(deg); }
+#esp-7  { top: 9px;  left: 186px; transform: rotate(deg); }
+#esp-8  { top: 9px;  left: 214px; transform: rotate(deg); }
+#esp-9  { top: 9px;  left: 242px; transform: rotate(deg); }
+#esp-10 { top: 9px;  left: 270px; transform: rotate(deg); }
+#esp-11 { top: 9px;  left: 298px; transform: rotate(deg); }
+#esp-12 { top: 9px;  left: 326px; transform: rotate(deg); }
+
+
+#esp-13 { top: 70px; left: 15px;  transform: rotate(90deg); }
+#esp-14 { top: 100px; left: 15px;  transform: rotate(90deg); }
+#esp-15 { top: 130px; left: 15px;  transform: rotate(90deg); }
+#esp-16 { top: 160px; left: 15px;  transform: rotate(90deg); }
+
+#esp-17 { top: 120px; left: 84px; transform: rotate(deg); }
+#esp-18 { top: 120px; left: 112px; transform: rotate(deg); }
+#esp-19 { top: 120px; left: 140px; transform: rotate(deg); }
+#esp-20 { top: 120px; left: 168px; transform: rotate(deg); }
+#esp-21 { top: 120px; left: 196px; transform: rotate(deg); }
+#esp-22 { top: 120px; left: 224px; transform: rotate(deg); }
+#esp-23 { top: 120px; left: 252px; transform: rotate(deg); }
+#esp-24 { top: 120px; left: 280px; transform: rotate(deg); }
+
+#esp-25 { top: 220px; left: 18px;  transform: rotate(deg); }
+#esp-26 { top: 220px; left: 46px;  transform: rotate(deg); }
+#esp-27 { top: 220px; left: 74px;  transform: rotate(deg); }
+#esp-28 { top: 220px; left: 102px; transform: rotate(deg); }
+#esp-29 { top: 220px; left: 130px; transform: rotate(deg); }
+#esp-30 { top: 220px; left: 158px; transform: rotate(deg); }
+#esp-31 { top: 220px; left: 186px; transform: rotate(deg); }
+#esp-32 { top: 220px; left: 214px; transform: rotate(deg); }
+#esp-33 { top: 220px; left: 242px; transform: rotate(deg); }
+#esp-34 { top: 220px; left: 270px; transform: rotate(deg); }
+#esp-35 { top: 220px; left: 298px; transform: rotate(deg); }
+#esp-36 { top: 220px; left: 326px; transform: rotate(deg); }
+
+}

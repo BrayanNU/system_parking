@@ -38,7 +38,7 @@ exports.update = async (req, res) => {
 
     // Cambiar estado de reserva y espacio según pago
     if (estado === "cancelado") {
-      await Reserva.updateEstado(reserva.idReserva, "cancelada");
+      await Reserva.updateEstado(reserva.idReserva, "cancelado");
       await Espacio.update(reserva.idEspacio, { estado: "disponible" });
     } else if (estado === "confirmado" || estado === "pagado") {
       await Reserva.updateEstado(reserva.idReserva, "confirmada");
@@ -69,12 +69,12 @@ const updateByReserva = async (req, res) => {
       return res.status(404).json({ error: "No se encontró pago pendiente para esa reserva" });
     }
 
-    await Reserva.sincronizarEstadoReserva(idReserva, 'pagado');
+    //await Reserva.sincronizarEstadoReserva(idReserva, 'pagado');
 
-    const reserva = await Reserva.getById(idReserva);
-    if (reserva) {
-      await Espacio.updateByReserva(idReserva, { estado: "ocupado" }); // asegúrate que esta función existe
-    }
+    //const reserva = await Reserva.getById(idReserva);
+    //if (reserva) {
+    //  await Espacio.updateByReserva(idReserva, { estado: "ocupado" }); // asegúrate que esta función existe
+    //}
 
     return res.status(200).json({ message: "Pago actualizado correctamente" });
   } catch (error) {

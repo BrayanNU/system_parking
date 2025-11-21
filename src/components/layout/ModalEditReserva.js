@@ -46,6 +46,21 @@ const ModalEditReserva = ({ reserva, onClose, onSave, espacios, tarifas }) => {
     [formData.horaEntrada, tarifaHora]
   );
 
+  // 🧠 Nueva función para calcular duración basado en horaEntrada y horaSalida
+  const calcularDuracionDesdeHoras = (horaEntrada, horaSalida) => {
+    const [hEntrada, mEntrada] = horaEntrada.split(":").map(Number);
+    const [hSalida, mSalida] = horaSalida.split(":").map(Number);
+
+    const entrada = new Date();
+    entrada.setHours(hEntrada, mEntrada, 0, 0);
+
+    const salida = new Date();
+    salida.setHours(hSalida, mSalida, 0, 0);
+
+    const diff = (salida - entrada) / (1000 * 60 * 60); // En horas
+    return diff > 0 ? diff : 0; // Para evitar valores negativos
+  };
+
   useEffect(() => {
     if (!reserva) return;
 
@@ -75,11 +90,28 @@ const ModalEditReserva = ({ reserva, onClose, onSave, espacios, tarifas }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // 🕒 Si la hora de salida cambia, calculamos la nueva duración y el monto
+    if (name === "horaSalida") {
+      const duracion = calcularDuracionDesdeHoras(formData.horaEntrada, value);
+      const { horaSalida, precioTotal } = calcularSalidaYPrecio(duracion);
+      setFormData((prev) => ({
+        ...prev,
+        horaSalida,
+        duracionHoras: duracion.toFixed(2),
+        precioTotal,
+      }));
+      return;
+    }
+
+    // 🕐 Si la duración cambia, recalculamos la hora de salida y el monto
     if (name === "duracionHoras") {
       const { horaSalida, precioTotal } = calcularSalidaYPrecio(value);
       setFormData((prev) => ({ ...prev, duracionHoras: value, horaSalida, precioTotal }));
       return;
     }
+
+    // Caso estándar, actualizamos el campo
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -124,7 +156,7 @@ const ModalEditReserva = ({ reserva, onClose, onSave, espacios, tarifas }) => {
             <option value="finalizada">Finalizada</option>
           </select>
 
-          <input type="number" name="duracionHoras" value={formData.duracionHoras} onChange={handleChange} placeholder="Duración (h)" min="1" step="1" />
+          <input type="number" name="duracionHoras" value={formData.duracionHoras} onChange={handleChange} placeholder="Duración (h)" min="0.1" step="0.01" />
           <input type="number" name="precioTotal" value={formData.precioTotal} onChange={handleChange} placeholder="Precio Total" min="0" step="0.01" />
 
           <div style={{ marginTop: 10 }}>
@@ -140,3 +172,4 @@ const ModalEditReserva = ({ reserva, onClose, onSave, espacios, tarifas }) => {
 };
 
 export default ModalEditReserva;
+

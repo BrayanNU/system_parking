@@ -25,7 +25,7 @@ const handleSubmit = async (e) => {
     const data = await usuariosService.login(correo, contrasena);
 
     // 🔹 Si el rol es admin → entra directo sin verificación
-    if (data.usuario.rol === "admin" || data.usuario.rol === "trabajador") {
+    if (data.usuario.rol === "admin" || data.usuario.rol === "cliente") {
       login(data);
       navigate("/dashboard");
       return; // ✅ terminamos aquí, sin pedir código

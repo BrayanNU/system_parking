@@ -16,10 +16,11 @@
 }
 
 .reserva-form {
-  display: grid;
+  display: block;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+
 }
 
 .reserva-form label {
@@ -31,7 +32,7 @@
 
 .reserva-form input,
 .reserva-form select {
-  width: 100%;
+  width: 300px;
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -55,6 +56,8 @@
   cursor: pointer;
   font-size: 1rem;
   transition: background 0.3s ease;
+  margin-top: 10px;
+  margin-left: 25%;
 }
 
 .btn-submit:hover {
@@ -63,5 +66,54 @@
 
 .tabla-reservas {
   margin-top: 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+}
+.reservas-list{
+  font-size: 12px;
+  border-radius: 20px;
+}
+.reserva-card{
+  display: flex;
+  margin-bottom: 10px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 20px;
+  border: 10px solid #EDF7FF;
+}
+.btn_res_a{
+  background-color: #f36e6e;
+  width: 80px;
+  height: 30px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  padding: 2px;
+  margin-top: 5px;
+  margin-left: 35px;
+}
+.btn_res_b{
+  background-color: #87f383;
+  width: 80px;
+  height: 30px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  padding: 2px;
+  margin-top: 5px;
 }
 
+.reserva-info{
+  width: 250px;
+  text-align: center;
+}
+.reserva-actions{
+  padding-top: 50px;
+  padding-left: 10px;
+
+}
+h3{
+  font-size: 22px;
+  text-align: center;
+} 

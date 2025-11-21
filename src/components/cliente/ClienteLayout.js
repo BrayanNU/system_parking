@@ -1,7 +1,8 @@
 // src/components/cliente/ClienteLayout.js
-import React from "react";
+import React from "react"; 
 import { Routes, Route, Navigate } from "react-router-dom";
 import ClienteSidebar from "./ClienteSidebar";
+
 
 // Aquí luego creas estos componentes
 import Disponibilidad from "./Disponibilidad";
@@ -9,6 +10,7 @@ import MisReservas from "./MisReservas";
 import ClientePagos from "./MisPagos";
 
 const ClienteLayout = () => {
+
   return (
     <div>
       <ClienteSidebar />
@@ -20,6 +22,7 @@ const ClienteLayout = () => {
           <Route path="pagos" element={<ClientePagos />} />
           <Route path="pagos/:idReserva" element={<ClientePagos />} />
         </Routes>
+      
       </div>
     </div>
   );

@@ -1,11 +1,13 @@
 // src/components/cliente/ClienteSidebar.js
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import "../../styles/sidebarCliente.css";
 
 const ClienteSidebar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+const { logout } = useContext(AuthContext);
 
   const toggleMenu = () => setOpen(!open);
 
@@ -40,6 +42,16 @@ const ClienteSidebar = () => {
             </li>
           </ul>
         </nav>
+        <button 
+          onClick={() => {
+            toggleMenu();
+            logout();
+          }}
+          className="logout-button-cl"
+        >
+          Cerrar sesión
+        </button>
+
       </div>
     </>
   );

@@ -57,7 +57,7 @@ exports.getDashboardData = async () => {
       LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
       JOIN espacios e ON r.idEspacio = e.idEspacio
       ORDER BY r.fecha DESC
-      LIMIT 8
+      LIMIT 6
     `);
 
     // ✅ Lista de espacios con su estado

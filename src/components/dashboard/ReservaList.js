@@ -1,4 +1,3 @@
-// src/components/dashboard/ReservaList.js
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import DataTable from "react-data-table-component";
@@ -7,9 +6,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-import { useNavigate } from "react-router-dom"; 
-import { useLocation } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
 
 import reservasService from "../../services/reservasService";
 import espaciosService from "../../services/espaciosService";
@@ -29,7 +26,9 @@ const addHoursToTime = (timeStrHHMMSS, hoursToAdd) => {
   const [hh, mm, ss] = timeStrHHMMSS.split(":").map(Number);
   const base = new Date();
   base.setHours(hh, mm, ss, 0);
-  return new Date(base.getTime() + hoursToAdd * 60 * 60 * 1000).toTimeString().slice(0, 8);
+  return new Date(base.getTime() + hoursToAdd * 60 * 60 * 1000)
+    .toTimeString()
+    .slice(0, 8);
 };
 
 const ReservaList = () => {
@@ -46,23 +45,26 @@ const ReservaList = () => {
   });
   const [reservaParaEditar, setReservaParaEditar] = useState(null);
 
-    const navigate = useNavigate();
-    const location = useLocation();
+  // 🔹 NUEVO: Control para “Reserva Ilimitada”
+  const [isIlimitado, setIsIlimitado] = useState(false);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // --- CARGA INICIAL ---
   useEffect(() => {
     fetchReservas();
     fetchEspacios();
     fetchTarifas();
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if (location.state?.idEspacio) {
-      setFormData(prev => ({ ...prev, idEspacio: location.state.idEspacio }));
-    }else{
-      console.log("sadasdasdasdasd");
+      setFormData((prev) => ({ ...prev, idEspacio: location.state.idEspacio }));
     }
   }, [location.state]);
 
+  // --- FETCH DATA ---
   const fetchReservas = async () => {
     try {
       const res = await reservasService.getAll();
@@ -72,6 +74,7 @@ useEffect(() => {
     }
   };
 
+  
   const fetchEspacios = async () => {
     try {
       const res = await espaciosService.getAll();
@@ -90,18 +93,19 @@ useEffect(() => {
     }
   };
 
-const handleImprimirTicket = async (idReserva) => {
-  try {
-    const response = await ticketsService.getByReserva(idReserva);
-    const ticket = response.data;
+  // --- IMPRIMIR TICKET ---
+  const handleImprimirTicket = async (idReserva) => {
+    try {
+      const response = await ticketsService.getByReserva(idReserva);
+      const ticket = response.data;
 
-    if (!ticket) {
-      Swal.fire("Error", "No se encontró ticket para esta reserva", "error");
-      return;
-    }
+      if (!ticket) {
+        Swal.fire("Error", "No se encontró ticket para esta reserva", "error");
+        return;
+      }
 
-    const ventana = window.open("", "_blank");
-    ventana.document.write(`
+      const ventana = window.open("", "_blank");
+      ventana.document.write(`
       <html>
         <head>
           <title>Ticket ${ticket.idTicket}</title>
@@ -197,51 +201,70 @@ const handleImprimirTicket = async (idReserva) => {
       </html>
     `);
     ventana.document.close();
-  } catch (error) {
-    console.error(error);
-    Swal.fire("Error", "No se pudo imprimir el ticket", "error");
-  }
-};
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "No se pudo imprimir el ticket", "error");
+    }
+  };
 
-
-
-
-
-
+  // --- CALCULAR PRECIO TOTAL ---
   const calcularPrecioTotal = (duracion) => {
-    const t = tarifas.find((t) => t.activa && (t.unidad === "hora" || t.dTarifa?.toLowerCase().includes("hora"))) || tarifas[0];
+    const t =
+      tarifas.find(
+        (t) =>
+          t.activa &&
+          (t.unidad === "hora" || t.dTarifa?.toLowerCase().includes("hora"))
+      ) || tarifas[0];
     return t ? (Number(t.precio) * Number(duracion)).toFixed(2) : "0.00";
   };
 
+  // --- CREAR RESERVA ---
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const duracion = Number(formData.duracionHoras);
-      if (!formData.idEspacio || duracion <= 0) {
-        return Swal.fire({
-          icon: "warning",
-          title: "Campos incompletos",
-          text: "Completa todos los campos antes de guardar la reserva.",
-        });
-      }
-
       const fecha = nowDateDDMMYYYY();
       const horaEntrada = timeHHMMSS();
-      const horaSalida = addHoursToTime(horaEntrada, duracion);
-      const precioTotal = calcularPrecioTotal(duracion);
 
-      await reservasService.create({
-        ...formData,
-        placa: formData.placa.toUpperCase(),
-        telefono: formData.telefono.replace(/\D/g, ""),
-        duracionHoras: duracion,
-        fecha,
-        horaEntrada,
-        horaSalida,
-        precioTotal,
-        estado: "activo",
-      });
+      if (isIlimitado) {
+        // 🔹 Modo ILIMITADO
+        await reservasService.create({
+          ...formData,
+          placa: formData.placa.toUpperCase(),
+          telefono: formData.telefono.replace(/\D/g, ""),
+          duracionHoras: 0,
+          fecha,
+          horaEntrada,
+          horaSalida: "00:00:00",
+          precioTotal: "0.00",
+          estado: "Ilimitado",
+        });
+      } else {
+        // 🔹 Modo NORMAL
+        const duracion = Number(formData.duracionHoras);
+        if (!formData.idEspacio || duracion <= 0) {
+          return Swal.fire({
+            icon: "warning",
+            title: "Campos incompletos",
+            text: "Completa todos los campos antes de guardar la reserva.",
+          });
+        }
+
+        const horaSalida = addHoursToTime(horaEntrada, duracion);
+        const precioTotal = calcularPrecioTotal(duracion);
+
+        await reservasService.create({
+          ...formData,
+          placa: formData.placa.toUpperCase(),
+          telefono: formData.telefono.replace(/\D/g, ""),
+          duracionHoras: duracion,
+          fecha,
+          horaEntrada,
+          horaSalida,
+          precioTotal,
+          estado: "activo",
+        });
+      }
 
       await fetchReservas();
       setFormData({
@@ -252,34 +275,52 @@ const handleImprimirTicket = async (idReserva) => {
         telefono: "",
         duracionHoras: "",
       });
+      setIsIlimitado(false);
 
       Swal.fire({
         icon: "success",
         title: "Reserva creada",
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       }).then(() => {
         navigate("/dashboard/espacios");
       });
     } catch (err) {
-      Swal.fire({ icon: "error", title: "Error", text: err.response?.data?.error || "Hubo un problema al crear la reserva." });
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.response?.data?.error || "Hubo un problema al crear la reserva.",
+      });
     }
   };
 
-
+  // --- EDITAR RESERVA ---
   const handleSaveEdit = async (datosEditados) => {
     try {
       if (!reservaParaEditar) return;
       setReservaParaEditar(null);
 
-      await reservasService.update(reservaParaEditar.idReserva, { ...reservaParaEditar, ...datosEditados });
+      await reservasService.update(reservaParaEditar.idReserva, {
+        ...reservaParaEditar,
+        ...datosEditados,
+      });
       await fetchReservas();
-      Swal.fire({ icon: "success", title: "Reserva actualizada", timer: 2000, showConfirmButton: false });
+      Swal.fire({
+        icon: "success",
+        title: "Reserva actualizada",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (err) {
-      Swal.fire({ icon: "error", title: "Error", text: err.response?.data?.error || "No se pudo actualizar la reserva." });
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.response?.data?.error || "No se pudo actualizar la reserva.",
+      });
     }
   };
 
+  // --- ELIMINAR RESERVA ---
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "¿Eliminar reserva?",
@@ -296,14 +337,23 @@ const handleImprimirTicket = async (idReserva) => {
       try {
         await reservasService.remove(id);
         await fetchReservas();
-        Swal.fire({ icon: "success", title: "Eliminada", timer: 2000, showConfirmButton: false });
+        Swal.fire({
+          icon: "success",
+          title: "Eliminada",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } catch {
-        Swal.fire({ icon: "error", title: "Error", text: "No se pudo eliminar la reserva." });
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo eliminar la reserva.",
+        });
       }
     }
   };
 
-  // Export functions
+  // --- EXPORTAR DATOS ---
   const exportExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(reservas);
     const workbook = XLSX.utils.book_new();
@@ -311,43 +361,39 @@ const handleImprimirTicket = async (idReserva) => {
     XLSX.writeFile(workbook, "reservas.xlsx");
   };
 
-const exportPDF = () => {
-  const doc = new jsPDF();
-  doc.text("Lista de Reservas", 14, 16);
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Lista de Reservas", 14, 16);
+    autoTable(doc, {
+      head: [
+        ["ID", "Espacio", "Cliente", "Placa", "Teléfono", "Fecha", "Entrada", "Salida", "Estado", "Total"],
+      ],
+      body: reservas.map((r) => [
+        r.idReserva,
+        r.numeroEspacio,
+        `${r.nombreCliente} ${r.apellidoCliente}`,
+        r.placa,
+        r.telefono,
+        r.fecha,
+        r.horaEntrada,
+        r.horaSalida,
+        r.estado,
+        r.precioTotal,
+      ]),
+      startY: 20,
+    });
+    doc.save("reservas.pdf");
+  };
 
-  autoTable(doc, {  // usa autoTable así
-    head: [["ID", "Espacio", "Cliente", "Placa", "Teléfono", "Fecha", "Entrada", "Salida", "Estado", "Total"]],
-    body: reservas.map(r => [
-      r.idReserva,
-      r.numeroEspacio,
-      `${r.nombreCliente} ${r.apellidoCliente}`,
-      r.placa,
-      r.telefono,
-      r.fecha,
-      r.horaEntrada,
-      r.horaSalida,
-      r.estado,
-      r.precioTotal
-    ]),
-    startY: 20
-  });
-
-  doc.save("reservas.pdf");
-};
-
-
-const [searchText, setSearchText] = useState("");
-
-// Filtrado de reservas
-const filteredReservas = reservas.filter(
-  r =>
+  // --- FILTRO ---
+  const [searchText, setSearchText] = useState("");
+  const filteredReservas = reservas.filter((r) =>
     `${r.nombreCliente} ${r.apellidoCliente}`.toLowerCase().includes(searchText.toLowerCase())
-);
+  );
 
-
-  // Columns for DataTable
+  // --- COLUMNAS TABLA ---
   const columns = [
-    { name: "ID", selector: (row) => row.idReserva, sortable: true},
+    { name: "ID", selector: (row) => row.idReserva, sortable: true },
     { name: "Espacio", selector: (row) => row.numeroEspacio, sortable: true },
     { name: "Cliente", selector: (row) => `${row.nombreCliente} ${row.apellidoCliente}`, sortable: true },
     { name: "Placa", selector: (row) => row.placa },
@@ -361,7 +407,7 @@ const filteredReservas = reservas.filter(
       name: "Acciones",
       cell: (row) => (
         <>
-          <button className="boton_editar" onClick={() => setReservaParaEditar(row)}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+          <button className="boton_editar" onClick={() => setReservaParaEditar(row)}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
           <button className="boton_eliminar" onClick={() => handleDelete(row.idReserva)}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
           <button className="boton_imprimir" onClick={() => handleImprimirTicket(row.idReserva)}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer-check-icon lucide-printer-check"><path d="M13.5 22H7a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v.5"/><path d="m16 19 2 2 4-4"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/></svg></button>
         </>
@@ -376,39 +422,69 @@ const filteredReservas = reservas.filter(
       <form onSubmit={handleSubmit} className="form-reserva">
         <div className="inputForm">
           <select
-        className="form-select"
-        value={formData.idEspacio}
-        onChange={(e) => setFormData({ ...formData, idEspacio: e.target.value })}
-      >
-        <option value="">-- Espacio --</option>
-        {espacios.map((esp) => (
-          <option key={esp.idEspacio} value={esp.idEspacio}>
-            {esp.numeroEspacio} {esp.estado === "ocupado" ? "(ocupado)" : ""}
-          </option>
-        ))}
-      </select>
-
-
+            className="form-select"
+            value={formData.idEspacio}
+            onChange={(e) => setFormData({ ...formData, idEspacio: e.target.value })}
+          >
+            <option value="">-- Espacio --</option>
+            {espacios.map((esp) => (
+              <option key={esp.idEspacio} value={esp.idEspacio}>
+                {esp.numeroEspacio} {esp.estado === "ocupado" ? "(ocupado)" : ""}
+              </option>
+            ))}
+          </select>
         </div>
+
         <div className="inputForm">
-          <input className="form-control" type="text" placeholder="Nombre" value={formData.nombreCliente} onChange={(e) => setFormData({ ...formData, nombreCliente: e.target.value })} />
+          <input className="form-control" type="text" placeholder="Nombre"
+            value={formData.nombreCliente}
+            onChange={(e) => setFormData({ ...formData, nombreCliente: e.target.value })}
+          />
         </div>
+
         <div className="col-md-2">
-          <input className="form-control" type="text" placeholder="Apellido" value={formData.apellidoCliente} onChange={(e) => setFormData({ ...formData, apellidoCliente: e.target.value })} />
+          <input className="form-control" type="text" placeholder="Apellido"
+            value={formData.apellidoCliente}
+            onChange={(e) => setFormData({ ...formData, apellidoCliente: e.target.value })}
+          />
         </div>
+
         <div className="inputForm">
-          <input className="form-control" type="text" placeholder="Placa" value={formData.placa} onChange={(e) => setFormData({ ...formData, placa: e.target.value.toUpperCase() })} />
+          <input className="form-control" type="text" placeholder="Placa"
+            value={formData.placa}
+            onChange={(e) => setFormData({ ...formData, placa: e.target.value.toUpperCase() })}
+          />
         </div>
+
         <div className="inputForm">
-          <input className="form-control" type="tel" placeholder="Teléfono" value={formData.telefono} onChange={(e) => setFormData({ ...formData, telefono: e.target.value.replace(/\D/g, "") })} />
+          <input className="form-control" type="tel" placeholder="Teléfono"
+            value={formData.telefono}
+            onChange={(e) => setFormData({ ...formData, telefono: e.target.value.replace(/\D/g, "") })}
+          />
         </div>
-        <div className="inputForm">
-          <input className="form-control" type="number" placeholder="Horas" value={formData.duracionHoras} min="1" step="1" onChange={(e) => setFormData({ ...formData, duracionHoras: e.target.value })} />
+
+        {/* 🔹 Campo horas oculto si es ilimitado */}
+        {!isIlimitado && (
+          <div className="inputForm">
+            <input className="form-control" type="number" placeholder="Horas"
+              value={formData.duracionHoras}
+              min="1" step="1"
+              onChange={(e) => setFormData({ ...formData, duracionHoras: e.target.value })}
+            />
+          </div>
+        )}
+
+        {/* 🔹 Checkbox Reserva Ilimitada */}
+        <div className="inputForm" style={{ display: "flex", alignItems: "center" }}>
+          <input type="checkbox" checked={isIlimitado} onChange={() => setIsIlimitado(!isIlimitado)} />
+          <label style={{ marginLeft: "8px" }}>Reserva Ilimitada</label>
         </div>
+
         <div className="col-md-1">
           <button type="submit" className="boton_form">Crear</button>
         </div>
       </form>
+
       <div className="tabla-container">
         <div className="pest-tabla">
           <input
@@ -420,21 +496,19 @@ const filteredReservas = reservas.filter(
           />
           <div className="fila_export">
             <button className="boton-excel" onClick={exportExcel}>Exportar Excel</button>
-          <button className="boton-pdf" onClick={exportPDF}>Exportar PDF</button>
+            <button className="boton-pdf" onClick={exportPDF}>Exportar PDF</button>
           </div>
-          
         </div>
 
-          <DataTable
-            columns={columns}
-            data={filteredReservas}
-            pagination
-            highlightOnHover
-            responsive
-            striped
-          />
+        <DataTable
+          columns={columns}
+          data={filteredReservas}
+          pagination
+          highlightOnHover
+          responsive
+          striped
+        />
       </div>
-      
 
       {reservaParaEditar && (
         <ModalEditReserva

@@ -15,7 +15,9 @@
   margin-bottom: 1.5rem;
   color: #333;
 }
-
+.mis-pagos-container h2{
+  font-size: 18px;
+}
 .metodos {
   display: flex;
   justify-content: space-between;
@@ -183,4 +185,224 @@ button[type="button"] {
 button:disabled {
   background-color: #ddd;
   cursor: not-allowed;
+}
+
+.mis-pagos-container{
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 8px;
+}
+.info_pago{
+  border: 1px solid #b7cfee;
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 20px;
+  height: 165px;
+  margin-bottom: 5px;
+}
+
+.metod {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+}
+.metod p{
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.metod label {
+  display: flex;
+  align-items: center; /* centra verticalmente el input y el texto */
+  gap: 8px; /* espacio entre el radio y el texto */
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+
+
+.metod input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #007bff; 
+}
+.emer_pa{
+  background-color: #ffffff;
+  margin-top: 10px;
+  border: 1px solid #b7cfee;
+  padding: 8px;
+  border-radius: 18px;
+  font-size: 14px;
+}
+.emer_pa label{
+  font-size: 14px;
+}
+.emer_pa input{
+  margin-left: 12px;
+  width: 340px;
+  border: none;
+  margin-bottom: 0;
+}
+.emer_pa input:focus {
+  border: none; /* Asegura que no se agregue borde al hacer foco */
+  outline: none; /* Desactiva el contorno de enfoque */
+}
+
+.emer_pa hr{
+
+  margin: 0;
+}
+.emer_pa ::placeholder{
+  color: #acacac;
+}
+.fecha-vencimiento {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacio entre los inputs */
+}
+
+.fecha-vencimiento input {
+  width: 40px;  /* Tamaño del input */
+  text-align: center;  /* Centra el texto dentro del input */
+  font-size: 14px;
+}
+
+.fecha-vencimiento span {
+  font-size: 10px; /* Tamaño del "/" */
+  font-weight:100;
+}
+.emer_pa button{
+  background-color: #0841C5;
+  padding: 10px;
+  margin-left: 30%;
+  color: white;
+  margin-top: 15px;
+}
+.emer_pa .fatal{
+  display: flex;
+}
+
+.fech label{
+  height: 21;
+}
+
+.block_card {
+  width: 200px;
+  height: 122px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.30); /* sombra más oscura */
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  margin-left: 20%;
+  margin-bottom: 5px;
+}
+
+.card_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* La imagen cubre todo el contenedor sin deformarse */
+  display: block;
+}
+
+.emer_pa_yape{
+  background-color: #ffffff;
+  margin-top: 10px;
+  border: 1px solid #b7cfee;
+  padding: 8px;
+  border-radius: 18px;
+  font-size: 14px;
+  color: #8F889D;
+  font-weight: 600;
+}
+.emer_pa_yape label{
+  font-size: 14px;
+}
+.emer_pa_yape .num_yape{
+  margin-left: 10px;
+  border-radius: 8px;
+  height: 40px;
+  padding: 2px;
+  border: 0.1rem solid #cecece;
+}
+.emer_pa_yape ::placeholder{
+  color: #b6b6b6;
+}
+.emer_pa_yape button{
+  background-color: #0841C5;
+  padding: 10px;
+  margin-left: 30%;
+  color: white;
+  margin-top: 15px;
+}
+.block_yape {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.yape_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* La imagen cubre todo el contenedor sin deformarse */
+  display: block;
+}
+.codd{
+  display: flex;
+}
+.codd input{
+  border: 1px solid #c0c0c0;
+  border-radius: 10px;
+  height: 45px;
+  padding-left: 12px;
+  font-size: 14px;
+  width: 150px;
+  background-color: #ffffff;
+  margin-top: 5px;
+}
+.codd button{
+  margin-left: 5px;
+  margin-top: 0;
+  width: 45px;
+  height: 45px;
+  font-size: 22px;
+  padding: 1px;
+  background-color: #ffffff;
+  color: #808080;
+  border: none;
+}
+.emer_pa .julls{
+  font-size: 13px;
+}
+.emer_pa .info_efe{
+  background-color: #FECC00;
+  padding: 5px;
+  font-size: 10px;
+  text-align: center;
+  margin-top: 10px;
+}
+.emer_pa .info_efe i{
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.block_efectivo {
+  width: 130px;
+  height: 35px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.efectivo_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* La imagen cubre todo el contenedor sin deformarse */
+  display: block;
 }

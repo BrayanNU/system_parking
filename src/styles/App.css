@@ -40,3 +40,13 @@ header *{
   height: 99%;
   border-radius: 30px;
 }
+
+@media screen and (max-width: 428px) {
+  body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color:#edf7ff!important;
+}
+}
